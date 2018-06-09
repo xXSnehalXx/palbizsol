@@ -31,7 +31,24 @@ const InfoSectionContainer = () => {
 const UtilitySectionContainer = () => {
     return (
         <View style={styles.utilitySectionContainer}>
-            <UtilitySectionInnerContainer/>
+            <UtilitySectionInner1/>
+            <UtilitySectionInner2/>
+        </View>
+    );
+}
+const UtilitySectionInner1 = () => {
+    return (
+        <View style={styles.utilitySectionInner1}>
+            <UtilityButtons name='home'/>
+            <UtilityButtons name='services'/>
+        </View>
+    );
+}
+const UtilitySectionInner2 = () => {
+    return (
+        <View style={styles.utilitySectionInner2}>
+            <UtilityButtons name='home'/>
+            <UtilityButtons name='services'/>
         </View>
     );
 }
@@ -116,7 +133,7 @@ const ProjectsButt = () => {
         <View>
             <TouchableOpacity activeOpacity={0.8}>
                 <View style={styles.projectsButton}>
-                    <Text style={styles.texty}>My Projects</Text>
+                    <Text>My Projects</Text>
                 </View>
             </TouchableOpacity>
         </View>
@@ -148,51 +165,59 @@ const styles = StyleSheet.create({
   utilitySectionContainer:{
     flex:3,
     margin:4,
-    //backgroundColor: '#BA4F43',
-    flexDirection:'row'
+    // backgroundColor: '#BA4F43',
+    flexDirection:'column',
+    // alignItems:'center',
+    justifyContent:'center',
+    alignContent:'space-between'
 },
   utilitySectionInnerContainer:{
     margin:4,
-    //backgroundColor: '#ffffff',
+    // backgroundColor: '#ffffff',
     // alignContent:'space-between',
     flexDirection:'row',
     flexWrap:'wrap',
     alignSelf:'center',
+    width:'75%'
 },
   myProjButtContainer:{
     flex:1,
     margin:4,
-    //backgroundColor: '#BA4F43',
+    // backgroundColor: '#BA4F43',
     flexDirection:'row',
+    // alignItems:'center',
     justifyContent:'center',
+    // paddingBottom:20
   },
   utilityButton:{
     margin:4,
-    //backgroundColor: '#0E7195',
+    // backgroundColor: '#0E7195',
     height:140,
     width:140,
     borderRadius:15,
-    borderWidth:1
+    borderWidth:1,
+    
   },
   projectsButton:{
     height:30,
     width:100,
-    //backgroundColor: '#0E7195',
+    // backgroundColor: '#0E7195',
     borderRadius:6,
     alignItems:'center',
     justifyContent:'center',
-    borderWidth:1    
+    borderWidth:1 ,
+    marginTop:10   
   },
   imageContainer:{
     flex:2,
-    //backgroundColor:'lightpink',
+    // backgroundColor:'lightpink',
     margin:4,
     alignItems:'center',
     justifyContent:'center'
   },
   textContainer:{
     flex:1,
-    //backgroundColor:'lightpink',
+    // backgroundColor:'lightpink',
     margin:4,
     alignItems:'center',
     justifyContent:'center'
@@ -204,6 +229,26 @@ const styles = StyleSheet.create({
   texty:{
     fontSize:18,
     fontWeight:'200'
+  },
+  utilitySectionInner1:{
+    flex:1,
+    // margin:4,
+    // backgroundColor: '#0E7195',
+    flexDirection:'row',
+    alignItems:'stretch',
+    alignItems:'center',
+    justifyContent:'space-around'
+  },
+  utilitySectionInner2:{
+    flex:1,
+    // margin:4,
+    // backgroundColor: '#0E7195',
+    flexDirection:'row',
+    alignItems:'stretch',
+    alignItems:'center',
+    justifyContent:'space-around'
+
+
   }
 
 
