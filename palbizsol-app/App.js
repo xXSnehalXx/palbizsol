@@ -132,29 +132,29 @@ const styles = StyleSheet.create({
   },
   headerContainer:{
     flex:1,
-    margin:4,
-    backgroundColor: '#ECD241',
+    backgroundColor: '#FE616A',
     alignItems:'center',
     justifyContent:'center',
   },
   headerText:{
     fontWeight:'300',
-    fontSize:20
+    fontSize:20,
+    color:'white'
   },
   infoSectionContainer:{
     flex:9,
-    margin:4,
-    backgroundColor:'#ECD241' 
+    backgroundColor:'#F7F0D7' 
   },
   utilitySectionContainer:{
     flex:3,
     margin:4,
-    backgroundColor: '#BA4F43',
+    //backgroundColor: '#BA4F43',
     flexDirection:'row'
 },
   utilitySectionInnerContainer:{
     margin:4,
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
+    // alignContent:'space-between',
     flexDirection:'row',
     flexWrap:'wrap',
     alignSelf:'center',
@@ -162,37 +162,37 @@ const styles = StyleSheet.create({
   myProjButtContainer:{
     flex:1,
     margin:4,
-    backgroundColor: '#BA4F43',
+    //backgroundColor: '#BA4F43',
     flexDirection:'row',
-    alignItems:'center',
     justifyContent:'center',
-    paddingBottom:30
   },
   utilityButton:{
     margin:4,
-    backgroundColor: '#0E7195',
+    //backgroundColor: '#0E7195',
     height:140,
     width:140,
-    borderRadius:15
+    borderRadius:15,
+    borderWidth:1
   },
   projectsButton:{
     height:30,
     width:100,
-    backgroundColor: '#0E7195',
+    //backgroundColor: '#0E7195',
     borderRadius:6,
     alignItems:'center',
-    justifyContent:'center',    
+    justifyContent:'center',
+    borderWidth:1    
   },
   imageContainer:{
     flex:2,
-    backgroundColor:'lightpink',
+    //backgroundColor:'lightpink',
     margin:4,
     alignItems:'center',
     justifyContent:'center'
   },
   textContainer:{
     flex:1,
-    backgroundColor:'lightpink',
+    //backgroundColor:'lightpink',
     margin:4,
     alignItems:'center',
     justifyContent:'center'
