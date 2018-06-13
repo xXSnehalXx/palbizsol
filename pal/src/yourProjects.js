@@ -52,11 +52,11 @@ class InfoSectionContainer extends Component{
     render(){
         var shortid = require('shortid');
 
-        let projects = Object.values(data).map(({type,...rem})=>{
-
-        return <ProjContainer imaSrc={this.getImage(type)} rem={rem} key={shortid.generate()}/>
-
-    });
+    //     let projects = Object.values(data).map(({type,...rem})=>{
+    //
+    //     return <ProjContainer imaSrc={this.getImage(type)} rem={rem} key={shortid.generate()}/>
+    //
+    // });    use {projects} or else use the flat list used below
         return (
                 <View style={styles.infoSectionContainer}>
                     <FlatList
