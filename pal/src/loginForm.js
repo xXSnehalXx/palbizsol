@@ -1,4 +1,3 @@
-/* @flow */
 
 import {withFormik,Formik} from 'formik';
 import React, { Component } from 'react';
@@ -79,10 +78,11 @@ const styles = StyleSheet.create({
     txtInp:{
         fontSize:16,
         paddingLeft:10,
-        paddingTop:10
+        paddingTop:10,
+        flexWrap:'wrap'
     },
     loginButton:{
-        height:30,
+        // height:30,
         width:100,
         borderRadius:6,
         alignItems:'center',
