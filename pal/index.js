@@ -7,7 +7,7 @@ import StatusInfo from './src/projectStatusInfoView.js';
 import OurServices from './src/AnimatedOurServices.js';
 import {Yapp,AnimatedExample,ManyAnimatedValuesExample,InterpolateExample,AnimatedNormalizedExample,PanResponderExample,CustomPanResponderExample} from './src/LocalImage.js';
 import Home from './src/Home.js';
-import TabViewExample from './src/tester.js';
+import TextInputEffectsExample from './src/tester.js';
 
 
 
