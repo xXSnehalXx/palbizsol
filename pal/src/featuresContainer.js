@@ -9,8 +9,24 @@ import {
     FlatList,
     ScrollView
 } from 'react-native';
+const data = {
+    features:["SSL Certification",
+            "Admin Panel",
+            "Dynamic Website",
+            "Data Statistics",
+            "Data Analytics",
+            "Responsive Pages",
+            "Mobile Compatible"
+        ]
+};
 
 const FeaturesContainer = () => {
+    let shortid = require('shortid');
+    let fets = new Array();
+    for (let i in data.features){
+        fets.push(<Text style={styles.boldLabel} key={shortid.generate()}>{'\u2022'} {data.features[i]}</Text>)
+    }
+
     return (<View style={styles.featuresContainer}>
         <View style={styles.featuresLabelContainer}>
             <Text style={styles.featuresLabel}>
@@ -18,13 +34,7 @@ const FeaturesContainer = () => {
             </Text>
         </View>
         <View style={styles.featuresTextContainer}>
-            <Text style={styles.boldLabel}>{'\u2022'} SSL Certification</Text>
-            <Text style={styles.boldLabel}>{'\u2022'} Admin Panel</Text>
-            <Text style={styles.boldLabel}>{'\u2022'} Dynamic Website</Text>
-            <Text style={styles.boldLabel}>{'\u2022'} Data Statistics</Text>
-            <Text style={styles.boldLabel}>{'\u2022'} Data Analytics</Text>
-            <Text style={styles.boldLabel}>{'\u2022'} Responsive Pages</Text>
-            <Text style={styles.boldLabel}>{'\u2022'} Mobile Compatible</Text>
+            {fets}
         </View>
     </View>);
 }
@@ -37,8 +47,7 @@ const styles = StyleSheet.create({
         // margin:4,
         minHeight:50,
         borderWidth:1,
-        marginBottom:4,
-        marginTop:4,
+        margin:8,
         paddingBottom:4
 
 

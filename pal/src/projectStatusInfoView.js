@@ -32,7 +32,19 @@ const HeaderContainer = () => {
 class InfoSectionContainer extends Component {
     constructor(props) {
         super(props);
-
+        this.state={
+            enabled:true
+        }
+    }
+    enableScroll=()=>{
+        this.setState({
+            enabled:true
+        });
+    }
+    disableScroll=()=>{
+        this.setState({
+            enabled:false
+        });
     }
 
     render() {
@@ -40,20 +52,30 @@ class InfoSectionContainer extends Component {
             <View style={styles.infoSectionContainer}>
 
 
-            <ScrollView
-                bounces={false}
-                ref={ref => this.scrollView = ref}
-                onContentSizeChange={(contentWidth, contentHeight)=>{
-                                        this.scrollView.scrollToEnd({animated: false});
-                                        }}
+                <ScrollView
+                    bounces={false}
+                    // ref={ref => this.scrollView = ref}
+                    // onContentSizeChange={(contentWidth, contentHeight)=>{
+                    //                         this.scrollView.scrollToEnd({animated: false});
+                    //                         }}
+                    scrollEnabled={this.state.enabled}
+                        onStartShouldSetResponder={(evt)=>true}
+                        onMoveShouldSetResponder={(evt)=>true}
+                        onResponderTerminationRequest={(evt)=>true}
+                        // onResponderGrant={(evt)=>alert('onResponderGrant')}
+                        onResponderMove={(evt)=>this.enableScroll()}
 
-                >
-                <StatusInfoContainer/>
-                <FeaturesContainer/>
-                <RemarksContainer/>
+                    >
+                        <TouchableOpacity activeOpacity={1} onPressIn={()=>{this.enableScroll()}}  >
+                            <StatusInfoContainer/>
+                            <FeaturesContainer/>
+                            <RemarksContainer disable={this.disableScroll} enable = {this.enableScroll}/>
+                        </TouchableOpacity>
 
-             </ScrollView>
- </View>
+
+
+                 </ScrollView>
+            </View>
 
 );
 
@@ -84,7 +106,7 @@ const styles = StyleSheet.create({
     infoSectionContainer: {
         flex: 9,
         backgroundColor: '#F7F0D7',
-        padding: 15
+        padding: 5
     },
 
 });

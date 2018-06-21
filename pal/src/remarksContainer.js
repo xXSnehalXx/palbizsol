@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {withFormik,Formik} from 'formik';
-
+import Hyperlink from 'react-native-hyperlink';
 import {
     StyleSheet,
     Text,
@@ -13,9 +13,11 @@ import {
     TextInput,
     TextArea,
     KeyboardAvoidingView,
-    PanResponder
+    PanResponder,
+    Linking
 
 } from 'react-native';
+
 
 const data = {
     remarks:{
@@ -32,19 +34,39 @@ const data = {
         '2018-02-22':[
             {P:'Ma\'am well be hosting the wireframe soon and provide a link for you to view it'},
             {C:'Yes definetly'},
-            {P:'https://wwww.palnesto.com'},
-            {C:'Yes , The overal structure looks pretty , there are few tweaks i want to make thought , will come tomorrow around 11:00 and discuss'}
+            {P:'This one maam https://palnesto.com'},
+            {C:'Yes , The overal structure looks pretty , there are few tweaks i want to make though , will come tomorrow around 11:00 and discuss'}
         ],
     }
 };
 
 class RemarksContainer extends Component {
 
+    constructor(props){
+        super(props);
+        this.state={
+            type:'P'
+        };
+    }
+    enterMessage=({mess})=>{
+        let dates = Object.keys(data.remarks).map((value)=>value);
+        let d = new Date();
+        let newd = `${d.getFullYear()}-${(d.getMonth()+1)<10?'0'+(d.getMonth()+1):d.getMonth()+1}-${d.getDate()}`;
+        if(dates.includes(newd))
+        {
+            data.remarks[`${newd}`].push({[this.state.type]:mess});
+        }
+        else{
+            data.remarks[`${newd}`]=[{[this.state.type]:mess}];
+        }
+        this.setState(this.state);
+    }
+
     render() {
         return (
             <View style={styles.remarksContainer}>
-                <RemarksMessagesContainer/>
-                <TextField_ButtonContainer/>
+                <RemarksMessagesContainer  enable={this.props.enable} disable = {this.props.disable} type={this.state.type}/>
+                <TextField_ButtonContainer enterMessage={({mess})=>this.enterMessage({mess})}/>
             </View>
 
     );
@@ -52,97 +74,106 @@ class RemarksContainer extends Component {
 
 }
 
-const RemarksMessagesContainer = () => {
+const RemarksMessagesContainer = (props) => {
     return (<View style={styles.remarksMessagesContainer} >
         <View style={styles.remarksLabelContainer}>
             <Text style={styles.remarksLabel}>Remarks</Text>
+            {/* <Text style={styles.remarksLabel} onPress={ ()=> Linking.openURL('https://google.com') } >Click Here To Open Google.</Text> */}
         </View>
-        <MessagesSection/>
+        <MessagesSection  enable={props.enable} disable = {props.disable}  type={props.type}/>
     </View>);
 }
 
 
 class MessagesSection extends Component {
-    componentWillMount () {
-         this._panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: (evt, gestureState) => true,
-       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-       onMoveShouldSetPanResponder: (evt, gestureState) => true,
-       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
-       onPanResponderGrant: (evt, gestureState) => {
-         // The gesture has started. Show visual feedback so the user knows
-         // what is happening!
-         alert('broGrant');
-         // gestureState.d{x,y} will be set to zero now
-       },
-       onPanResponderMove: (evt, gestureState) => {
-         // The most recent move distance is gestureState.move{X,Y}
-
-         // The accumulated gesture distance since becoming responder is
-         // gestureState.d{x,y}
-       },
-       onPanResponderTerminationRequest: (evt, gestureState) => true,
-       onPanResponderRelease: (evt, gestureState) => {
-         // The user has released all touches while this view is the
-         // responder. This typically means a gesture has succeeded
-         alert('broRelease');
-
-       },
-       onPanResponderTerminate: (evt, gestureState) => {
-         // Another component has become the responder, so this gesture
-         // should be cancelled
-
-       },
-       onShouldBlockNativeResponder: (evt, gestureState) => {
-         // Returns whether this component should block native components from becoming the JS
-         // responder. Returns true by default. Is currently only supported on android.
-         return true;
-       }
-      });
+    constructor(props){
+        super(props);
+        this.state={
+            type:props.type
+        };
     }
+    isEmpty = (obj) => {
+            for(var key in obj) {
+                if(obj.hasOwnProperty(key))
+                    return false;
+            }
+            return true;
+        }
     render() {
+        let shortid = require('shortid');
+        let dat = new Array();
+        if(!this.isEmpty(data)){
+                   let dates = Object.keys(data.remarks).map((value)=>value);
+                    dates.sort().forEach((value,index,ob)=>{
+                                  var d = new Date(value);
+                                  var newd = `${d.getDate()}-${(d.getMonth()+1)<10?'0'+(d.getMonth()+1):d.getMonth()+1}-${d.getFullYear()}`;
+                                  dat.push({D:newd})
+                                  Object.entries(data.remarks[value]).forEach((value,index,ob)=>{
+                                      Object.entries(value[1]).forEach((value,index,ob)=>{
+                                        let st = ""+value[0];
+                                          dat.push({[st]:value[1]});
+
+                                      });
+                                  });
+                              });
+        }
+        disp =Object.values(dat).map((value,index,ob)=>(
+             Object.entries(value).map((value,index,ob)=>{
+              switch(value[0]){
+                    case 'D': return <DateStamp date={value[1]}  key={shortid.generate()}/>
+                                break;
+                    case this.state.type: return <Mess tex={value[1]}  key={shortid.generate()}/>
+                                break;
+                    default : return <Mess rev tex={value[1]} key={shortid.generate()}/>
+                                break;
+                          }
+          })
+      ));
         return (
         <MessageView style={styles.MessagesSection}>
+
             <ScrollView
                 bounces={false}
                 ref={ref => this.scrollView = ref}
                 onContentSizeChange={(contentWidth, contentHeight)=>{
                                         this.scrollView.scrollToEnd({animated: false});
-                                        }}
+                                    }}
+                // collapsable={true}
+                onStartShouldSetResponder={(evt)=>true}
+                onMoveShouldSetResponder={(evt)=>true}
+                onResponderTerminationRequest={(evt)=>true}
+                onScrollEndDrag={this.props.enable}
+                onResponderMove={(evt)=>this.props.disable}
+
+
                 >
-                    <DateStamp/>
-                    <Mess />
-                    <Mess rev/>
-                    <Mess />
-                    <Mess rev/>
-                    <DateStamp/>
-                    <Mess />
-                    <Mess rev/>
-                    <Mess />
-                    <Mess rev/>
-                </ScrollView>
+                <TouchableOpacity activeOpacity={1} onPressIn={this.props.disable}  >
+                    {disp}
+                </TouchableOpacity>
+
+            </ScrollView>
 
 
         </MessageView>
     );
     }
 }
-const DateStamp = () => {
+const DateStamp = (props) => {
     return(
       <View style={styles.DateStampContainer}>
-          <Text style={styles.DateStampText}>2018-04-20</Text>
+          <Text style={styles.DateStampText}>{props.date}</Text>
       </View>
     );
 }
 
 const MessageView = (props) => {
     return(
-      <View style={props.style} >
+      <View style={props.style}  >
           {
               props.children?
 
-                      props.children
+              props.children
 
               :
               <View style={{height:50,alignItems:'center',justifyContent:'center'}}>
@@ -154,26 +185,44 @@ const MessageView = (props) => {
 }
 
 const Mess = (props) => {
-    return(
-      <View style={(props.rev)?(styles.MessRev):(styles.Mess)}>
-          <View style={styles.MessImage}>
 
-          </View>
-          <View style={styles.MessTextContainer}>
-              <Text style={styles.txtInp}>HEy bro this thing is ok fot he poks</Text>
-          </View>
-      </View>
+    return(
+        <View style={props.rev?styles.MessRev:styles.Mess}>
+            <View style={styles.MessTextContainer}>
+                <Hyperlink linkDefault={true} linkStyle={ { color: '#2980b9', fontSize: 20 } }>
+                <Text style={styles.txtInp}>{props.tex}</Text>
+            </Hyperlink>
+            </View>
+            <View style={styles.MessImage}>
+
+            </View>
+        </View>
     );
+
 }
 
-const TextField_ButtonContainer = () => {
+class TextField_ButtonContainer extends Component{
+
+
+sendButtonPressed=(props)=>{
+    alert(props.values.username);
+}
+    render(){
     return (
         // <View style={styles.textFieldButtonContainer}>
 
         <Formik
             onSubmit={(values, actions) => {
                       if(values){
-                          alert(JSON.stringify(values))
+                          //Here values come
+                          // alert(JSON.stringify(values))
+                          // alert(values.message.text());
+                          let mess = values.message;
+                          values.message="";
+                          if (mess.replace(/\s/g, '').length) {
+                              this.props.enterMessage({mess});
+                            }
+
                       }
                     }}
             render={(props)=>(
@@ -187,60 +236,48 @@ const TextField_ButtonContainer = () => {
                             placeholder="Type message"
                             underlineColorAndroid='rgba(0,0,0,0)'
                             style={styles.txtInp}
-                            onChangeText={text =>props.setFieldValue('username', text)}
-                            value={props.values.username}
+                            onChangeText={text =>props.setFieldValue('message', text)}
+                            value={props.values.message}
                         />
 
 
                     </View>
                     <View style={styles.PostBox}>
-
+                        <TouchableOpacity onPress={props.handleSubmit}>
+                            <Image
+                                source={require('../images/send.png')}
+                                style={{height:20,width:20}}
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
             )}
         />
-    // </View>
-);
+);}
 }
 const styles = StyleSheet.create({
     remarksContainer:{
-        backgroundColor:'#1E00F6',
-        margin:4,
+        backgroundColor:'#ffffff',
+        // margin:4,
+        borderWidth:1,
+        borderColor:'#000000',
+        margin:8
         // minHeight:150 //this needs to have a min height so that it can display message textfield,remark label,post button in an elegant way
+    },
 
-    },
-    mainContainer: {
-      flex: 1,
-      marginTop:(Platform.OS=='ios'?20:0),
-      backgroundColor: '#D1D1D1'
-    },
-    headerContainer:{
-      flex:1,
-      backgroundColor: '#FC7753',
-      alignItems:'center',
-      justifyContent:'center',
-    },
-    headerText:{
-      fontWeight:'300',
-      fontSize:24,
-      color:'white'
-    },
-    infoSectionContainer:{
-      flex:9,
-      backgroundColor:'#F7F0D7',
-      padding:10
-
-  },remarksMessagesContainer:{
-      flex:1,
-      backgroundColor:'#ADADAD',
-      margin:4,
+    remarksMessagesContainer:{
+      // flex:1,
+      // backgroundColor:'#ADADAD',
+      // margin:4,
 
   },
   remarksLabelContainer:{
-      backgroundColor:'#3C9767',
-    alignItems:'baseline',
+    // backgroundColor:'#3C9767',
+    justifyContent:'flex-end',
     paddingLeft:10,
-    margin:4,
+    // margin:4,
+    borderBottomWidth:1,
+    // height:50
 // margin:4
   },
   remarksLabel:{
@@ -250,20 +287,24 @@ const styles = StyleSheet.create({
       lineHeight:40
   },
   MessagesSection:{
-    backgroundColor:'#3C9767',
-    maxHeight:400
+    // backgroundColor:'#3C9767',
+    maxHeight:350
   },
   Mess:{
-      // minHeight:60,
-      backgroundColor:'lightpink',
+      flex:1,
+      // backgroundColor:'lightpink',
       // margin:4,
       flexDirection:'row',
+      justifyContent:'flex-end',
+      // flexWrap:'wrap'
   },
   MessRev:{
-      // minHeight:60,
-      backgroundColor:'lightpink',
-      margin:4,
-      flexDirection:'row-reverse'
+      flex:1,
+      // backgroundColor:'lightpink',
+      // margin:4,
+      flexDirection:'row-reverse',
+      justifyContent:'flex-end'
+
   },
   MessImage:{
       height:40,
@@ -273,15 +314,17 @@ const styles = StyleSheet.create({
       borderRadius:25
   },
   MessTextContainer:{
-      flex:1,
+      // flex:1,
+      // flex:1,
+      maxWidth:'83%',
       backgroundColor:'lightblue',
       margin:4,
       borderRadius:10
   },
 
 MessagePostContainer:{
-    backgroundColor:'#3C9767',
-    margin:4,
+    backgroundColor:'#E6E8E9',
+    // margin:4,
     flexDirection:'row',
     alignItems:'flex-end',
     padding:4
@@ -296,16 +339,22 @@ textFieldContainer:{
 MessageBox:{
     flex:1,
     borderRadius:20,
-    backgroundColor:'lightpink',
+    backgroundColor:'white',
     // margin:4,
-    marginRight:4
+    marginRight:4,
+    borderWidth:1,
+    borderColor:'#C5C9CC'
     // padding:2
 },
 PostBox:{
     height:(Platform.OS=='ios'?47:48),
     aspectRatio:1,
     borderRadius:25,
-    backgroundColor:'lightpink',
+    backgroundColor:'white',
+    borderWidth:1,
+    borderColor:'#C5C9CC',
+    alignItems:'center',
+    justifyContent:'center'
     // margin:4
 },
 txtInp:{
@@ -319,13 +368,13 @@ txtInp:{
     color:'#000000'
 },
 DateStampContainer:{
-    backgroundColor:'lightpink',
+    // backgroundColor:'lightpink',
     margin:4,
     alignItems:'center',
     justifyContent:'center'
 },
 DateStampText:{
-    backgroundColor:'lightblue',
+    // backgroundColor:'lightblue',
     margin:4,
     color:'grey',
     fontSize:13
